@@ -104,7 +104,7 @@ exports.createAccount = async (req, res) => {
             {
                 kycType,
                 kycId,
-                dob: req.user.dateOfBirth
+                dob: req.DateOfBirth
             },
             {
                 headers: {
@@ -119,7 +119,7 @@ exports.createAccount = async (req, res) => {
 
         // Save account details to MongoDB
         const account = new Account({
-            userId: req.user.id,
+            userId: req.UserID,
             accountNumber: nibssAccount.accountNumber,
             bankCode: nibssAccount.bankCode,
             bankName: nibssAccount.bankName,
