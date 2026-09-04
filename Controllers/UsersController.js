@@ -1,6 +1,6 @@
 const User = require('../Models/Users');
 const bcrypt = require('bcryptjs');
-
+const jwt = require('jsonwebtoken');
 
 
 //register user
@@ -42,23 +42,45 @@ exports.registerUser = async (req, res) => {
 //login user
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
+
     try {
         // Check if user exists
         const user = await User.findOne({ email });
+
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({
+                message: "Invalid credentials"
+            });
         }
 
         // Check if password is correct
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({
+                message: "Invalid credentials"
+            });
         }
 
-        res.status(200).json({ message: 'Login successful' });
+        // Create/sign JWT
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        // Send token back after successful login
+        return res.status(200).json({
+            message: "Login successful",
+            token
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+
+        return res.status(500).json({
+            message: "Internal server error"
+        });
     }
 };
 
