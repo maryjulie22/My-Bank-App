@@ -17,7 +17,12 @@ const getNibssToken = async () => {
             {
                 apiKey: process.env.API_KEY,
                 apiSecret: process.env.API_SECRET
-            }
+            },
+            {
+        headers: {
+            "Content-Type": "application/json"
+        }
+          }
         );
 
         // Save the new token
